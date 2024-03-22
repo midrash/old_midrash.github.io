@@ -33,10 +33,11 @@
 </head>
 <body>
     <div class="container" id="container">
-        <h1>Daily Diary</h1>
+        <h1>TIL? WIL!</h1>
         <!-- Diary entries will be dynamically added here -->
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
         // GitHub repository 정보
         const repoOwner = 'midrash';
@@ -50,20 +51,33 @@
                 // 파일 목록에서 일기 파일 추출하여 목록에 추가
                 const diaryEntries = data.filter(entry => entry.type === 'file');
                 const container = document.getElementById('container');
-
+                
                 // 파일 목록을 역순으로 정렬
                 diaryEntries.reverse();
-                
+
                 diaryEntries.forEach(entry => {
                     const fileName = entry.name;
                     const diaryEntryHTML = `
                         <a href="${basePath}${fileName}">
                             <div class="diary-entry">
                                 <h2>${fileName}</h2>
+                                <div class="markdown-content"></div>
                             </div>
                         </a>
                     `;
                     container.innerHTML += diaryEntryHTML;
+
+                    // 마크다운 파일을 HTML로 변환하여 표시
+                    fetch(`${basePath}${fileName}`)
+                        .then(response => response.text())
+                        .then(data => {
+                            const htmlContent = marked(data);
+                            document.querySelector(`#${fileName.replace('.html', '')} .markdown-content`).innerHTML = htmlContent;
+                        })
+                        .catch(error => {
+                            console.error(`Error loading diary content for ${fileName}:`, error);
+                            document.querySelector(`#${fileName.replace('.html', '')} .markdown-content`).textContent = 'Error loading diary content.';
+                        });
                 });
             })
             .catch(error => {
