@@ -50,6 +50,10 @@
                 // 파일 목록에서 일기 파일 추출하여 목록에 추가
                 const diaryEntries = data.filter(entry => entry.type === 'file');
                 const container = document.getElementById('container');
+
+                // 파일 목록을 역순으로 정렬
+                diaryEntries.reverse();
+                
                 diaryEntries.forEach(entry => {
                     const fileName = entry.name;
                     const diaryEntryHTML = `
