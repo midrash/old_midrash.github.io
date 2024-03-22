@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Diary</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .diary-entry {
+            cursor: pointer;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+        .diary-entry h2 {
+            margin-top: 0;
+        }
+        .diary-entry p {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container">
+        <h1>Daily Diary</h1>
+        <!-- Diary entries will be dynamically added here -->
+    </div>
+
+    <script>
+        // GitHub repository 정보
+        const repoOwner = 'midrash';
+        const repoName = 'midrash.github.io';
+        const basePath = 'diaries/';
+
+        // GitHub API를 사용하여 파일 목록 가져오기
+        fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${basePath}`)
+            .then(response => response.json())
+            .then(data => {
+                // 파일 목록에서 일기 파일 추출하여 목록에 추가
+                const diaryEntries = data.filter(entry => entry.type === 'file');
+                const container = document.getElementById('container');
+                diaryEntries.forEach(entry => {
+                    const fileName = entry.name;
+                    const date = fileName.split('.')[0].replace(/_/g, '-'); // 파일 이름에서 날짜 추출
+                    const diaryEntryHTML = `
+                        <a href="${basePath}${fileName}">
+                            <div class="diary-entry">
+                                <h2>${date}</h2>
+                            </div>
+                        </a>
+                    `;
+                    container.innerHTML += diaryEntryHTML;
+                });
+            })
+            .catch(error => {
+                console.error('Error loading diary entries:', error);
+                document.getElementById('container').textContent = 'Error loading diary entries.';
+            });
+    </script>
+</body>
+</html>
