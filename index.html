@@ -52,12 +52,10 @@
                 const container = document.getElementById('container');
                 diaryEntries.forEach(entry => {
                     const fileName = entry.name;
-                    const date = fileName.split('.')[0].replace(/_/g, '-'); // 파일 이름에서 날짜 추출
-                    const title = fileName.split('.')[0].replace(/_/g, ' '); // 파일 이름에서 제목 추출
                     const diaryEntryHTML = `
                         <a href="${basePath}${fileName}">
                             <div class="diary-entry">
-                                <h2>${date} - ${title}</h2>
+                                <h2>${fileName}</h2>
                             </div>
                         </a>
                     `;
